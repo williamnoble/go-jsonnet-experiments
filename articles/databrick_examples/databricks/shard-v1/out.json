@@ -1,0 +1,96 @@
+{
+   "apiVersion": "v1",
+   "items": [
+      {
+         "kind": "Service",
+         "metadata": {
+            "name": "foocorp-webapp"
+         },
+         "spec": {
+            "selector": {
+               "serviceName": "foocorp-webapp"
+            }
+         }
+      },
+      {
+         "kind": "Deployment",
+         "metadata": {
+            "name": "foocorp-webapp"
+         },
+         "spec": {
+            "replicas": 1,
+            "template": {
+               "metadata": {
+                  "labels": {
+                     "name": "foocorp-webapp"
+                  }
+               },
+               "spec": {
+                  "containers": [
+                     {
+                        "env": {
+                           "name": "SERVICE_CONF",
+                           "value": "{\n    \"customerName\": \"foocorp\",\n    \"database\": \"user-db.databricks.us-west-2.rds.amazonaws.com\",\n    \"managerAddress\": \"foocorp-manager.prod.svc.cluster.local\"\n}"
+                        },
+                        "image": "webapp:2.42-rc1",
+                        "name": "default",
+                        "resources": {
+                           "requests": {
+                              "cpu": "500m",
+                              "memory": "250Mi"
+                           }
+                        }
+                     }
+                  ]
+               }
+            }
+         }
+      },
+      {
+         "kind": "Service",
+         "metadata": {
+            "name": "foocorp-manager"
+         },
+         "spec": {
+            "selector": {
+               "serviceName": "foocorp-manager"
+            }
+         }
+      },
+      {
+         "kind": "Deployment",
+         "metadata": {
+            "name": "foocorp-manager"
+         },
+         "spec": {
+            "replicas": 1,
+            "template": {
+               "metadata": {
+                  "labels": {
+                     "name": "foocorp-manager"
+                  }
+               },
+               "spec": {
+                  "containers": [
+                     {
+                        "env": {
+                           "name": "SERVICE_CONF",
+                           "value": "{\n    \"customerName\": \"foocorp\",\n    \"database\": \"user-db.databricks.us-west-2.rds.amazonaws.com\"\n}"
+                        },
+                        "image": "manager:2.42-rc1",
+                        "name": "default",
+                        "resources": {
+                           "requests": {
+                              "cpu": "500m",
+                              "memory": "250Mi"
+                           }
+                        }
+                     }
+                  ]
+               }
+            }
+         }
+      }
+   ],
+   "kind": "List"
+}
